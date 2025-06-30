@@ -1,6 +1,6 @@
 | On-Demand Analysis Of AtliQ Hardware |
 
-``````````````````````` TASK -1 `````````````````````````````````````````````````````````````````````
+````````````````````````````````````````````````````TASK -1 `````````````````````````````````````````````````````````````````````
 Generate a monthly aggregated product-level sales report for Croma India customers for Fiscal Year 2021.
 The report is structured to include the following fields:
 1)Month
@@ -67,7 +67,7 @@ WHERE
 ORDER BY s.date ASC
 LIMIT 10000;
 
-```````````````````````````````TASK -2```````````````````````````````````````````````````````````````````
+``````````````````````````````````````````````````````````````TASK -2```````````````````````````````````````````````````````````````````
 Create SQL Function to Determine Calendar Quarter from a Date
 
 
@@ -94,7 +94,7 @@ end case;
 return  qtr;
 END;
 
-```````````````````````````````TASK -3``````````````````````````````````````````````````````````````````````````````````
+``````````````````````````````````````````````````````````````TASK -3``````````````````````````````````````````````````````````````````````````````````
 Retrieve Monthly gross sales report for any customer
 
 
@@ -116,7 +116,7 @@ GROUP BY  s.date
 ORDER BY  s.date ASC;
 END 
 
-````````````````````````````````````TASK -4``````````````````````````````````````````````````````````````````
+``````````````````````````````````````````````````````````````````````TASK -4``````````````````````````````````````````````````````````````````
 Create a stored procedure that assigns a market badge to each region based on its total sold quantity.
 Badge Logic: If a region's total sold quantity exceeds 5 million units, assign it a 'Gold' badge; otherwise, assign 'Silver'.
 
@@ -152,4 +152,4 @@ BEGIN
           END IF;
 END;
 
-```````````````````````````````````````TASK -5```````````````````````````````````````````````````````````
+````````````````````````````````````````````````````````````````````TASK -5```````````````````````````````````````````````````````````
