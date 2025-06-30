@@ -1,0 +1,154 @@
+| On-Demand Analysis Of AtliQ Hardware |
+
+````````````````````````````````````````````````````TASK -1 `````````````````````````````````````````````````````````````````````
+Generate a monthly aggregated product-level sales report for Croma India customers for Fiscal Year 2021.
+The report is structured to include the following fields:
+1)Month
+2)Product Name
+3)Variant
+4)Sold Quantity
+5)Gross Price Per Item
+6)Gross Price Total
+
+
+
+SELECT 
+    s.date, s.product_code, s.sold_quantity,
+    p.product, p.variant,
+    g.gross_price,
+    ROUND(s.sold_quantity * g.gross_price, 2) AS gross_price_total
+ FROM 
+    fact_sales_monthly AS s
+ JOIN 
+    dim_product AS p 
+    USING (product_code)
+ JOIN 
+    fact_gross_price AS g 
+    ON g.product_code = s.product_code
+    AND g.fiscal_year = get_fiscal_year(s.date)
+ WHERE 
+    s.customer_code = 90002002
+    AND YEAR(DATE_ADD(s.date, INTERVAL 4 MONTH)) = 2021
+ ORDER BY s.date DESC
+ LIMIT 1000;
+
+
+#However, to improve query readability, maintainability, and eliminate repetitive logic, we create a reusable fiscal_year() function to avoid rewriting fiscal year calculations in every query.
+
+#Function of fiscal year
+CREATE FUNCTION `get_fiscal_year`(calendar_date DATE) 
+	RETURNS int
+    	DETERMINISTIC
+   BEGIN
+        DECLARE fiscal_year INT;
+        SET fiscal_year = YEAR(DATE_ADD(calendar_date, INTERVAL 4 MONTH));
+        RETURN fiscal_year;
+   END;
+
+
+#Query to Generate Croma Sales Report – FY 2021
+SELECT 
+    s.date, s.product_code, s.sold_quantity,
+    p.product, p.variant,
+    g.gross_price,
+    ROUND(s.sold_quantity * g.gross_price, 2) AS gross_price_total
+  FROM 
+    fact_sales_monthly AS s
+  JOIN 
+    dim_product AS p 
+    USING (product_code)
+  JOIN 
+    fact_gross_price AS g 
+    ON g.product_code = s.product_code
+    AND g.fiscal_year = get_fiscal_year(s.date)
+  WHERE 
+    s.customer_code = 90002002
+    AND get_fiscal_year(s.date) = 2021
+  ORDER BY s.date ASC
+  LIMIT 10000;
+
+```````````````````````````````````````````````````````````TASK -2```````````````````````````````````````````````````````````````````
+Create SQL Function to Determine Calendar Quarter from a Date
+
+
+--> SOLUTION
+#Function for Quarter
+CREATE FUNCTION `get_quarter`(calender_date date) 
+          RETURNS char(2);
+DETERMINISTIC
+BEGIN
+     declare m tinyint;
+     declare qtr char(2);
+     set m= month(calender_date);
+
+case
+      when m  in (9,10,11) then
+           set qtr="q1";
+      when m   in (12,1,2) then
+           set qtr ="q2";
+      when m  in  (3,4,5) then
+            set  qtr="q3";
+      else
+            set qtr="q4";
+end case; 
+return  qtr;
+END;
+
+``````````````````````````````````````````````````````````````TASK -3``````````````````````````````````````````````````````````````````````````````````
+Retrieve Monthly gross sales report for any customer
+
+
+--> SOLUTION
+#Instead of writing separate queries for each customer like Zepto, Flipkart, or Neptune, we can use a Stored Procedure to retrieve data for any set of customers.
+
+#Create the stored procedure
+CREATE PROCEDURE `get_monthly_gross_sales` (IN c_code INT)
+BEGIN
+SELECT
+     s.date,
+     ROUND(SUM(g.gross_price * s.sold_quantity), 2) AS monthly_sales
+FROM  fact_sales_monthly AS s
+JOIN fact_gross_price AS g 
+      ON g.product_code = s.product_code
+      AND g.fiscal_year = get_fiscal_year(s.date)
+WHERE  s.customer_code = c_code
+GROUP BY  s.date
+ORDER BY  s.date ASC;
+END 
+
+``````````````````````````````````````````````````````````````````````TASK -4``````````````````````````````````````````````````````````````````
+Create a stored procedure that assigns a market badge to each region based on its total sold quantity.
+Badge Logic: If a region's total sold quantity exceeds 5 million units, assign it a 'Gold' badge; otherwise, assign 'Silver'.
+
+
+--> SOLUTION
+
+CREATE PROCEDURE `get_market_badge`(
+        	IN in_market VARCHAR(45), IN in_fiscal_year YEAR,
+        	OUT out_market_badge VARCHAR(45)
+	)
+BEGIN
+     DECLARE qty_sold INT DEFAULT 0;
+    
+  # Default market is India
+    	     IF in_market = "" THEN
+                  SET in_market="India";
+           END IF;
+    
+  # Retrieve total sold quantity for a given market in a given year
+           SELECT 
+              SUM(s.sold_quantity) INTO qty_sold 
+           FROM fact_sales_monthly s
+             JOIN dim_customer c
+             ON s.customer_code=c.customer_code
+           WHERE 
+                  get_fiscal_year(s.date)=in_fiscal_year AND
+                  c.market=in_market;
+      
+ # Market Badge Either Gold or  Silver
+          IF qty_sold  > 5000000 THEN
+               SET out_market_badge = 'Gold';
+          ELSE
+              SET out_market_badge= 'Silver';
+          END IF;
+END;
