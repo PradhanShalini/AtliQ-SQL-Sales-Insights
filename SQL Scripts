@@ -116,7 +116,7 @@ GROUP BY  s.date
 ORDER BY  s.date ASC;
 END 
 
-````````````````````````````````````TASK -5``````````````````````````````````````````````````````````````````
+````````````````````````````````````TASK -4``````````````````````````````````````````````````````````````````
 Create a stored procedure that assigns a market badge to each region based on its total sold quantity.
 Badge Logic: If a region's total sold quantity exceeds 5 million units, assign it a 'Gold' badge; otherwise, assign 'Silver'.
 
