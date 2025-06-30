@@ -34,6 +34,7 @@ SELECT
 
 
 #However, to improve query readability, maintainability, and eliminate repetitive logic, we create a reusable fiscal_year() function to avoid rewriting fiscal year calculations in every query.
+
 #Function of fiscal year
 CREATE FUNCTION `get_fiscal_year`(calendar_date DATE) 
 	RETURNS int
@@ -66,7 +67,7 @@ SELECT
   ORDER BY s.date ASC
   LIMIT 10000;
 
-``````````````````````````````````````````````````````````````TASK -2```````````````````````````````````````````````````````````````````
+```````````````````````````````````````````````````````````TASK -2```````````````````````````````````````````````````````````````````
 Create SQL Function to Determine Calendar Quarter from a Date
 
 
@@ -99,8 +100,8 @@ Retrieve Monthly gross sales report for any customer
 
 --> SOLUTION
 #Instead of writing separate queries for each customer like Zepto, Flipkart, or Neptune, we can use a Stored Procedure to retrieve data for any set of customers.
-#Create the stored procedure
 
+#Create the stored procedure
 CREATE PROCEDURE `get_monthly_gross_sales` (IN c_code INT)
 BEGIN
 SELECT
@@ -121,6 +122,7 @@ Badge Logic: If a region's total sold quantity exceeds 5 million units, assign i
 
 
 --> SOLUTION
+
 CREATE PROCEDURE `get_market_badge`(
         	IN in_market VARCHAR(45), IN in_fiscal_year YEAR,
         	OUT out_market_badge VARCHAR(45)
