@@ -1,7 +1,7 @@
 # AtliQ-SQL-Sales-Insights
  Description of On-Demand Analysis Project:
 
-🏢 AtliQ Hardware –[Business Background]
+🏢 AtliQ Hardware –Business Background:
 AtliQ Hardware is a growing firm in the hardware sector, known for its expanding product line and increasing market presence. During its early operations, the company primarily depended on manual data processes and spreadsheets for tracking performance and operations. As the business grew in scale and complexity, it began facing issues such as data redundancy, inconsistent records, and inefficient information retrieval, all of which started to limit productivity and slow down decision-making.
 
 Transforming Raw Data Into Actionable Intelligence:To address these challenges, AtliQ migrated from manual data handling to a relational database system, creating a structured and dependable data foundation. This upgrade significantly enhanced the company’s ability to manage larger data volumes, while also improving data consistency, accuracy, and accessibility across departments.
